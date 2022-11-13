@@ -32,7 +32,11 @@
           </form>
 
 
-          <a class="btn btn-danger" href="{{ '/auth/redirect'}}">google</a>
+          <a class="btn btn-danger"
+            style="width: 100%; margin-top:30px;height: 50px;justify-content:center;text-align:center;align-items:center;display:flex;border-radius:10px"
+            href="{{ '/auth/redirect'}}">
+            <span>Masuk Dengan Akun Google</span>
+          </a>
         </div>
       </div>
     </div>

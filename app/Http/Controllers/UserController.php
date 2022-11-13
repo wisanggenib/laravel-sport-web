@@ -14,17 +14,33 @@ class UserController extends Controller
 {
     public function landing()
     {
-        if (@$_GET['kat'] != "") {
-            $artikel = DB::table('artikel')->where('kategori', $_GET['kat'])->get();
+        if (@$_GET['kat'] != "" && @$_GET['kategori_permainan'] != "") {
+            $artikel = DB::table('artikel')
+                ->join('kategori_permainan AS kp', 'kp.id_kategori', '=', 'artikel.id_kategori')
+                ->where('kategori', $_GET['kat'])
+                ->where('artikel.id_kategori', $_GET['kategori_permainan'])
+                ->get();
+        } else if (@$_GET['kat'] != "") {
+            $artikel = DB::table('artikel')
+                ->join('kategori_permainan AS kp', 'kp.id_kategori', '=', 'artikel.id_kategori')
+                ->where('kategori', $_GET['kat'])
+                ->get();
+        } else if (@$_GET['kategori_permainan'] != "") {
+            $artikel = DB::table('artikel')
+                ->join('kategori_permainan AS kp', 'kp.id_kategori', '=', 'artikel.id_kategori')
+                ->where('artikel.id_kategori', $_GET['kategori_permainan'])
+                ->get();
         } else {
-            $artikel = DB::table('artikel')->get();
+            $artikel = DB::table('artikel')
+                ->join('kategori_permainan AS kp', 'kp.id_kategori', '=', 'artikel.id_kategori')->get();
         }
-        return view('user.landing', ['artikel' => $artikel]);
+        $kategori_permainan = DB::table('kategori_permainan')->get();
+        return view('user.landing', ['artikel' => $artikel, 'kat' => @$_GET['kat'], 'kategori_permainan' => $kategori_permainan, 'kp' => @$_GET['kategori_permainan']]);
     }
 
     public function detail_blog($slug)
     {
-        $artikel = DB::table('artikel')->where('id_artikel', $slug)->get()->first();
+        $artikel = DB::table('artikel')->join('kategori_permainan AS kp', 'kp.id_kategori', '=', 'artikel.id_kategori')->where('id_artikel', $slug)->get()->first();
         if (empty($artikel)) {
             abort(404);
         }

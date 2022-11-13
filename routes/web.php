@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('', 'UserController@landing')
     ->name('landing');
 
+Route::post('/filter', 'UserController@filter')
+    ->name('filter');
+
 Route::get('blog/{id}', 'UserController@detail_blog')
     ->name('user_detail_blog');
 
@@ -92,6 +95,32 @@ Route::post('/admin/edit_password', 'AdminController@admin_edit_password_proses'
     ->name('pengelola_edit_password_proses');
 
 
+//kategori permainan
+Route::get('/pengelola/list_kategori', 'KategoriController@kategori_permainan_list')
+    ->name('kategori_permainan_list');
+
+Route::get('/pengelola/tambah_kategori', 'KategoriController@kategori_permainan_tambah')
+    ->name('kategori_permainan_tambah');
+
+Route::post('/pengelola/tambah_kategori_proses', 'KategoriController@kategori_permainan_tambah_proses')
+    ->name('kategori_permainan_tambah_proses');
+
+Route::get('/pengelola/hapus_kategori/{id}', 'KategoriController@kategori_permainan_hapus_proses')
+    ->name('kategori_permainan_hapus_proses');
+
+Route::get('/pengelola/edit_kategori/{id}', 'KategoriController@kategori_permainan_ubah')
+    ->name('kategori_permainan_ubah');
+
+Route::post('/pengelola/ubah_kategori_proses/{id}', 'KategoriController@kategori_permainan_ubah_proses')
+    ->name('kategori_permainan_ubah_proses');
+
+
+// Route::get('/kalender', 'KalenderController@kalender_list')
+//     ->name('kalender');
+
+// Route::get('/kalender_detail/{tgl}', 'KalenderController@kalender_detail')
+//     ->name('kalender_detail');
+
 // ARTIKEL
 Route::get('/pengelola/list_artikel', 'ArtikelController@pengelola_artikel_list')
     ->name('pengelola_artikel_list');
@@ -145,13 +174,6 @@ Route::post('/pengelola/edit_artikel_kat/{id}', 'ArtikelController@pengelola_kat
 
 Route::get('/pengelola/hapus_artikel_kat/{id}', 'ArtikelController@pengelola_kat_artikel_hapus_proses')
     ->name('pengelola_artikel_kat_hapus_proses');
-
-
-//KATEGORI PERMAINAN
-Route::get('/pengelola/list_permainan_kat', 'ArtikelController@pengelola_kat_artikel_list')
-    ->name('list_kategori_permainan');
-
-
 
 
 // KALENDER

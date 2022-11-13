@@ -32,7 +32,8 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md-2 mb-2">
-            <a href="{{route('pengelola_artikel_kat_tambah')}}" class="btn btn-sm btn-block btn-primary">Tambah Kategori</a>
+            <a href="{{route('pengelola_artikel_kat_tambah')}}" class="btn btn-sm btn-block btn-primary">Tambah
+              Kategori</a>
           </div>
         </div>
       </div>
@@ -50,14 +51,15 @@
             </thead>
             <tbody>
               <?php foreach ($list as $key => $value): ?>
-                <tr>
-                  <td>{{$key+1}}</td>
-                  <td>{{$value->nama_kategori}}</td>
-                  <td>
-                    <a href="{{route('pengelola_artikel_kat_edit', $value->id_artikel_kategori, [])}}" class="badge badge-info">Ubah</a>
-                    <a href="#" data-id="{{$value->id_artikel_kategori}}" class="badge badge-danger btn_hapus">Hapus</a>
-                  </td>
-                </tr>
+              <tr>
+                <td>{{$key+1}}</td>
+                <td>{{$value->nama_kategori}}</td>
+                <td>
+                  <a href="{{route('pengelola_artikel_kat_edit', $value->id_artikel_kategori, [])}}"
+                    class="badge badge-info">Ubah</a>
+                  <a href="#" data-id="{{$value->id_artikel_kategori}}" class="badge badge-danger btn_hapus">Hapus</a>
+                </td>
+              </tr>
               <?php endforeach ?>
             </tbody>
           </table>
@@ -72,7 +74,6 @@
 
 
 <script>
-
   $(document).ready( function () {
       $('.table_data').DataTable();
   } );
