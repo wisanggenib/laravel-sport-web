@@ -37,9 +37,11 @@
     <div class="card card-default">
       <div class="card-header">
         <div class="row">
+          @if (session('level') == "2")
           <div class="col-md-3 mb-2">
             <a href="{{route('pengelola_artikel_tambah')}}" class="btn btn-sm btn-block btn-primary">Tambah Artikel</a>
           </div>
+          @endif
         </div>
       </div>
       <!-- /.card-header -->

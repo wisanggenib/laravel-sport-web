@@ -49,7 +49,8 @@
           @csrf
           <div class="form-group">
             <label>Judul Artikel</label>
-            <input type="text" value="{{old('judul')}}" name="judul" max="200" class="form-control" autocomplete="off" require>
+            <input type="text" value="{{old('judul')}}" name="judul" max="200" class="form-control" autocomplete="off"
+              require>
             @error('judul') <small class="text-danger">{{$message}}</small> @enderror
           </div>
           <div class="form-group">
@@ -57,6 +58,18 @@
             <select class="form-control select2bs4" name="kategori" style="width: 100%;">
               <option value="1">Tournamen Minor</option>
               <option value="2">Tournamen Major</option>
+            </select>
+            @error('kategori') <small class="text-danger">{{$message}}</small> @enderror
+          </div>
+          <div class="form-group">
+            <label>Kategori Artikel</label>
+            <select class="form-control select2bs4" name="kategori_permainan" style="width: 100%;" required>
+              <option value="" disabled selected>Pilih Kategori Permainan
+              </option>
+              @foreach ($kategori_permainan as $item)
+              <option value={{ $item->id_kategori }}>{{ $item->nama_kategori }}</option>
+              @endforeach
+
             </select>
             @error('kategori') <small class="text-danger">{{$message}}</small> @enderror
           </div>

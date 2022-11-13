@@ -11,12 +11,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Kategori Artikel</h1>
+        <h1>Kategori Permainan</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Kategori Artikel</li>
+          <li class="breadcrumb-item active">List Kategori Permainan</li>
         </ol>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md-2 mb-2">
-            <a href="{{route('pengelola_artikel_kat_tambah')}}" class="btn btn-sm btn-block btn-primary">Tambah
+            <a href="{{route('kategori_permainan_tambah')}}" class="btn btn-sm btn-block btn-primary">Tambah
               Kategori</a>
           </div>
         </div>
@@ -55,9 +55,9 @@
                 <td>{{$key+1}}</td>
                 <td>{{$value->nama_kategori}}</td>
                 <td>
-                  <a href="{{route('pengelola_artikel_kat_edit', $value->id_artikel_kategori, [])}}"
+                  <a href="{{route('kategori_permainan_ubah', $value->id_kategori, [])}}"
                     class="badge badge-info">Ubah</a>
-                  <a href="#" data-id="{{$value->id_artikel_kategori}}" class="badge badge-danger btn_hapus">Hapus</a>
+                  <a href="#" data-id="{{$value->id_kategori}}" class="badge badge-danger btn_hapus">Hapus</a>
                 </td>
               </tr>
               <?php endforeach ?>
@@ -93,7 +93,7 @@
             $.alert('Mohon Tunggu');
             var id = $(elemen).attr('data-id');
             // alert(id);
-            window.location.href = '{{route("pengelola_artikel_kat_hapus_proses", "")}}/'+id;
+            window.location.href = '{{route("kategori_permainan_hapus_proses", "")}}/'+id;
           }
         },
         Tidak: function () {

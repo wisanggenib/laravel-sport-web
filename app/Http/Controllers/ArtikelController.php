@@ -12,18 +12,21 @@ use Illuminate\Validation\Rule;
 class ArtikelController extends Controller
 {
     // KATEGORI
-    public function pengelola_kat_artikel_list (){
+    public function pengelola_kat_artikel_list()
+    {
         role_diizinkan('2');
         $list = DB::table('artikel_kategori')->get();
-        return view('admin.kat_artikel_list', ['list'=> $list]);
+        return view('admin.kat_artikel_list', ['list' => $list]);
     }
 
-    public function pengelola_kat_artikel_tambah (){
+    public function pengelola_kat_artikel_tambah()
+    {
         role_diizinkan('2');
         return view('admin.kat_artikel_tambah');
     }
 
-    public function pengelola_kat_artikel_tambah_proses(Request $request){
+    public function pengelola_kat_artikel_tambah_proses(Request $request)
+    {
         role_diizinkan('2');
         $validation = $request->validate([
             'nama' => 'required|max:50'
@@ -31,48 +34,51 @@ class ArtikelController extends Controller
 
         DB::table('artikel_kategori')->insert(
             [
-                'id_artikel_kategori' => Str::uuid(), 
+                'id_artikel_kategori' => Str::uuid(),
                 'nama_kategori' => $request->nama
             ]
         );
         return redirect()->route('pengelola_artikel_kat_list')->with('notif', 'Data berhasil disimpan')->with('notif_type', 'success');
     }
 
-    public function pengelola_kat_artikel_edit($id_kategori){
+    public function pengelola_kat_artikel_edit($id_kategori)
+    {
         role_diizinkan('2');
         $data = DB::table('artikel_kategori')->where('id_artikel_kategori', $id_kategori)->get()->first();
         if (empty($data)) {
             abort(404);
             return redirect()->guest('/errorpage');
         }
-        return view('admin.kat_artikel_edit', ['data'=>$data]);
+        return view('admin.kat_artikel_edit', ['data' => $data]);
     }
 
 
-    public function pengelola_kat_artikel_edit_proses(Request $req, $id_kategori){
+    public function pengelola_kat_artikel_edit_proses(Request $req, $id_kategori)
+    {
         role_diizinkan('2');
         $validation = $req->validate([
             'nama' => 'max:50'
         ]);
-        
+
         DB::table('artikel_kategori')
-        ->where('id_artikel_kategori', $id_kategori)
-        ->update([
-                'nama_kategori' => $req->nama
-            ]
-        );
+            ->where('id_artikel_kategori', $id_kategori)
+            ->update(
+                [
+                    'nama_kategori' => $req->nama
+                ]
+            );
 
         return redirect()->route('pengelola_artikel_kat_list')->with('notif', 'Data berhasil diubah');
-
     }
 
 
-    public function pengelola_kat_artikel_hapus_proses($id_kategori){
+    public function pengelola_kat_artikel_hapus_proses($id_kategori)
+    {
         role_diizinkan('2');
         $count = DB::table('artikel')->where('id_artikel_kategori', $id_kategori)->count();
         if ($count > 0) {
             return redirect()->route('pengelola_artikel_kat_list')->with('notif', 'Data tidak bisa dihapus, karena masih ada artikel yang memiliki kategori tersebut')
-            ->with('notif_type', 'danger');
+                ->with('notif_type', 'danger');
         }
 
         DB::table('artikel_kategori')->where('id_artikel_kategori', $id_kategori)->delete();
@@ -82,7 +88,8 @@ class ArtikelController extends Controller
 
 
     // ARTIKEL
-    public function pengelola_artikel_list(){
+    public function pengelola_artikel_list()
+    {
         role_diizinkan('0|1|2|3');
         kelola_artikel();
 
@@ -91,7 +98,7 @@ class ArtikelController extends Controller
         //     ->join('user AS p1', 'artikel.created_by', '=', 'p1.id_user')
         //     ->leftjoin('user AS p2', 'artikel.approved_by', '=', 'p2.id_user')
         //     ->select('artikel.*', 'p1.nama_user AS dibuat', 'p2.nama_user AS ditanggapi');
-            
+
         //     if (@$_GET['list'] == "persetujuan") {
         //         $query->where('artikel.status_approved', 'Menunggu');
         //     }elseif(@$_GET['list'] == "ditolak"){
@@ -118,18 +125,23 @@ class ArtikelController extends Controller
 
         $respon = $query->get();
 
+        $kategori_permainan = DB::table('kategori_permainan')->get();
+
         $persetujuan = DB::table('artikel')->count();
 
-        return view('admin.artikel_list', ['list'=> $respon, 'persetujuan' => $persetujuan]);
+        return view('admin.artikel_list', ['list' => $respon, 'persetujuan' => $persetujuan, 'kategori_permainan' => $kategori_permainan]);
     }
 
-    public function pengelola_artikel_tambah(){
+    public function pengelola_artikel_tambah()
+    {
         role_diizinkan('1|2');
         kelola_artikel();
-        return view('admin.artikel_tambah');
+        $kategori_permainan = DB::table('kategori_permainan')->get();
+        return view('admin.artikel_tambah', ['kategori_permainan' => $kategori_permainan]);
     }
 
-    public function pengelola_artikel_tambah_proses(Request $req){
+    public function pengelola_artikel_tambah_proses(Request $req)
+    {
         role_diizinkan('1|2');
         kelola_artikel();
         $validation = $req->validate([
@@ -140,70 +152,79 @@ class ArtikelController extends Controller
         ]);
 
         $destination = "public/images/artikel";
-        $file_name = Str::uuid().".".$req->foto_thumbnail->extension();
+        $file_name = Str::uuid() . "." . $req->foto_thumbnail->extension();
         $path = $req->foto_thumbnail->storeAs($destination, $file_name);
-        if($path){
+        if ($path) {
             DB::table('artikel')->insert(
                 [
-                    'id_user' => session('id'), 
-                    'judul' => $req->judul, 
-                    'konten' => $req->input('konten'), 
+                    'id_user' => session('id'),
+                    'judul' => $req->judul,
+                    'konten' => $req->input('konten'),
                     'gambar' => $file_name,
                     'kategori' => $req->kategori,
+                    'id_kategori' => $req->kategori_permainan,
                 ]
             );
-    
+
             return redirect()->route('pengelola_artikel_list')->with('notif', 'Artikel berhasil disimpan')->with('notif_type', 'success');
         }
         return redirect()->route('pengelola_artikel_list')->with('notif', 'Gagal menyimpan data')->with('notif_type', 'danger');
     }
 
 
-    public function pengelola_artikel_detail($id_artikel){
+    public function pengelola_artikel_detail($id_artikel)
+    {
         role_diizinkan('1|2');
         kelola_artikel();
         $data = DB::table('artikel')
-        ->join('user AS p1', 'artikel.id_user', '=', 'p1.id_user')
-        ->where('id_artikel', '=', $id_artikel)->get()->first();
+            ->join('user AS p1', 'artikel.id_user', '=', 'p1.id_user')
+            ->leftJoin('kategori_permainan AS kp', 'artikel.id_kategori', '=', 'kp.id_kategori')
+            ->where('id_artikel', '=', $id_artikel)->get()->first();
 
-        return view('admin.artikel_detail', ['data'=> $data]);
-
+        return view('admin.artikel_detail', ['data' => $data]);
     }
 
 
-    public function pengelola_artikel_terima($id_artikel){
+    public function pengelola_artikel_terima($id_artikel)
+    {
         role_diizinkan('2');
         DB::table('artikel')
-        ->where('id_artikel', $id_artikel)
-        ->update([
-                'status_approved' => 'Tayang',
-                'approved_by' => session('id')
-            ]
-        );
+            ->where('id_artikel', $id_artikel)
+            ->update(
+                [
+                    'status_approved' => 'Tayang',
+                    'approved_by' => session('id')
+                ]
+            );
         return redirect()->route('pengelola_artikel_list')->with('notif', 'Artikel berhasil ditayangkan');
     }
 
-    public function pengelola_artikel_tolak($id_artikel){
+    public function pengelola_artikel_tolak($id_artikel)
+    {
         role_diizinkan('2');
         DB::table('artikel')
-        ->where('id_artikel', $id_artikel)
-        ->update([
-                'status_approved' => 'Ditolak',
-                'approved_by' => session('id')
-            ]
-        );
+            ->where('id_artikel', $id_artikel)
+            ->update(
+                [
+                    'status_approved' => 'Ditolak',
+                    'approved_by' => session('id')
+                ]
+            );
         return redirect()->route('pengelola_artikel_list')->with('notif', 'Artikel berhasil ditayangkan');
     }
 
-    public function pengelola_artikel_edit ($id_artikel){
+    public function pengelola_artikel_edit($id_artikel)
+    {
         role_diizinkan('1|2');
         $data = DB::table('artikel')
-        ->where('id_artikel', '=', $id_artikel)->get()->first();
+            ->where('id_artikel', '=', $id_artikel)->get()->first();
+        $kategori_permainan = DB::table('kategori_permainan')->get();
 
-        return view('admin.artikel_edit', ['data'=> $data]);
+        return view('admin.artikel_edit', ['data' => $data, 'kategori_permainan' => $kategori_permainan]);
     }
 
-    public function pengelola_artikel_edit_proses(Request $req, $id_artikel){
+    public function pengelola_artikel_edit_proses(Request $req, $id_artikel)
+    {
         role_diizinkan('1|2');
         // dd($req->all());
 
@@ -224,75 +245,75 @@ class ArtikelController extends Controller
         try {
 
             DB::table('artikel')
-            ->where('id_artikel', $id_artikel)
-            ->update([
-                    'judul' => $req->judul,
-                    'kategori' => $req->kategori,
-                    'konten' => $req->konten,
-                ]
-            );
+                ->where('id_artikel', $id_artikel)
+                ->update(
+                    [
+                        'judul' => $req->judul,
+                        'kategori' => $req->kategori,
+                        'konten' => $req->konten,
+                        'id_kategori' => $req->kategori_permainan
+                    ]
+                );
 
-            if($req->hasFile('foto_thumbnail')){
+            if ($req->hasFile('foto_thumbnail')) {
                 $destination = "public/images/artikel";
-                $file_name = Str::uuid().".".$req->foto_thumbnail->extension();
+                $file_name = Str::uuid() . "." . $req->foto_thumbnail->extension();
                 $req->foto_thumbnail->storeAs($destination, $file_name);
-                DB::table('artikel')->where('id_artikel',$id_artikel)->update([
+                DB::table('artikel')->where('id_artikel', $id_artikel)->update([
                     'gambar' => $file_name
                 ]);
             }
 
-            if($req->hasFile('foto_thumbnail')){
+            if ($req->hasFile('foto_thumbnail')) {
                 if ($data_old->gambar != 'default.svg') {
-                    delete_storage($destination."/".$data_old->gambar);
+                    delete_storage($destination . "/" . $data_old->gambar);
                 }
             }
 
             // SUKSES
             DB::commit();
             return redirect()->route('pengelola_artikel_list')->with('notif', 'Data berhasil diubah');
-
         } catch (\Exception $e) {
-            if($req->hasFile('foto_thumbnail')){
-                delete_storage($destination."/".$file_name);
+            if ($req->hasFile('foto_thumbnail')) {
+                delete_storage($destination . "/" . $file_name);
             }
             DB::rollback();
             return redirect()->route('pengelola_artikel_list')->with('notif', 'Data gagal diubah -')
-            ->with('notif_type', 'danger');
+                ->with('notif_type', 'danger');
         }
-
     }
 
 
 
-    public function pengelola_artikel_hapus_proses($id_artikel){
+    public function pengelola_artikel_hapus_proses($id_artikel)
+    {
         // role_diizinkan('2');
         $data_old = DB::table('artikel')->where('id_artikel', $id_artikel)->get()->first();
 
         DB::table('artikel')->where('id_artikel', $id_artikel)->delete();
 
         $destination = "public/images/artikel";
-        delete_storage($destination."/".$data_old->gambar);
+        delete_storage($destination . "/" . $data_old->gambar);
 
         return redirect()->route('pengelola_artikel_list')->with('notif', 'Data berhasil dihapus');
     }
 
-    public function tambah_komentar_proses(Request $request, $id_artikel){
+    public function tambah_komentar_proses(Request $request, $id_artikel)
+    {
         // role_diizinkan('1|2|3|4');
         DB::table('komentar')->insert(
             [
-                'id_artikel' => $id_artikel, 
-                'id_user' => session('id'), 
+                'id_artikel' => $id_artikel,
+                'id_user' => session('id'),
                 'konten' => ($request->komentar),
             ]
         );
         return redirect()->back()->with('notif', 'Komentar berhasil dikiirm');
-
     }
 
-    public function hapus_komentar_proses(Request $request, $id_komentar){
+    public function hapus_komentar_proses(Request $request, $id_komentar)
+    {
         DB::table('komentar')->where('id_komentar', '=', $id_komentar)->delete();
         return redirect()->back()->with('notif', 'Komentar berhasil dihapus');
     }
-
-
 }

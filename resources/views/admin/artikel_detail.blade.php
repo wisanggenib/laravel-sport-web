@@ -41,13 +41,15 @@
     <!-- SELECT2 EXAMPLE -->
     <div class="card card-default">
       <div class="card-body">
-        
+
         <center>
           <img src="{{asset('storage/images/artikel/'.$data->gambar)}}" width="30%" alt="">
           <hr>
           <h5>{{$data->judul}}</h5>
         </center>
-        Oleh : {{$data->nama}} 
+        Oleh : {{$data->nama}}
+        <br />
+        Kategori : {{$data->nama_kategori}}
         <hr>
         {!! $data->konten !!}
 
@@ -59,7 +61,6 @@
 </section>
 
 <script>
-
   $(document).ready(function() {
     $('#summernote').summernote({
       height: 300

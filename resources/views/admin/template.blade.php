@@ -118,9 +118,9 @@
             </li>
             <?php endif ?>
 
-            <?php if (session('kelola_artikel')): ?>
+            <?php if (session('level') == "1"): ?>
             <li class="nav-item">
-              <a href="{{route('list_kategori_permainan')}}" class="nav-link <?= ($halaman=="
+              <a href="{{route('kategori_permainan_list')}}" class="nav-link <?= ($halaman=="
                 kategori_permainan")?'active':null ?>">
                 <i class="nav-icon far fa-file-alt"></i>
                 <p>Kategori Permainan</p>
